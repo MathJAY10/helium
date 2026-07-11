@@ -1,0 +1,38 @@
+# Environments
+.env
+.env.local
+.venv
+venv/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Playwright
+test-results/
+
+# Node
+node_modules/
+.next/
+out/
+build/
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Custom
+artifacts/
+*.log
