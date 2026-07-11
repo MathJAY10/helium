@@ -157,8 +157,8 @@ class ShopifyCrawler:
             elif "/products/" in url:
                 products.add(url)
         
-        # Prioritize non-empty, unique links. Limit based on requirements.
-        return list(collections)[:1], list(products)[:5]
+        # Strict limits to stay within Render's 30-second free-tier timeout
+        return list(collections)[:0], list(products)[:2]
 
     async def _crawl_bounded(self, context: BrowserContext, url: str, page_type: PageType) -> PageResult:
         """Wraps fetch with a semaphore for concurrency control."""
@@ -186,13 +186,10 @@ class ShopifyCrawler:
             
             logger.info("Discovery complete", collections=len(collection_urls), products=len(product_urls))
 
-            # 3. Crawl concurrently (Collections, Products, Cart)
+            # 3. Crawl concurrently (Products only - skip cart to stay within timeout)
             tasks = []
-            for url in collection_urls:
-                tasks.append(self._crawl_bounded(context, url, PageType.COLLECTION))
             for url in product_urls:
                 tasks.append(self._crawl_bounded(context, url, PageType.PRODUCT))
-            tasks.append(self._crawl_bounded(context, cart_url, PageType.CART))
             
             results = await asyncio.gather(*tasks, return_exceptions=True)
             
