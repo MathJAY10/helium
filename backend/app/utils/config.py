@@ -9,8 +9,8 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str
     GEMINI_MODEL: str = "gemini-2.5-flash"
     LOG_LEVEL: str = "INFO"
-    REQUEST_TIMEOUT: int = 15
-    MAX_CONCURRENT_PAGES: int = 5
+    REQUEST_TIMEOUT: int = 25
+    MAX_CONCURRENT_PAGES: int = 1
     CACHE_TTL: int = 900  # 15 minutes
 
     model_config = SettingsConfigDict(

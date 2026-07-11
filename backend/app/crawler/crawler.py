@@ -73,8 +73,8 @@ class ShopifyCrawler:
         for attempt in range(1, retries + 1):
             page = await context.new_page()
             try:
-                # Use networkidle to ensure JavaScript renders the DOM
-                response = await page.goto(url, timeout=settings.REQUEST_TIMEOUT * 1000, wait_until="networkidle")
+                # Use domcontentloaded instead of networkidle to prevent timeouts on tracking-heavy sites
+                response = await page.goto(url, timeout=settings.REQUEST_TIMEOUT * 1000, wait_until="domcontentloaded")
                 
                 # Check for bot protection (e.g. Cloudflare Challenge)
                 if response and response.status in (403, 503):

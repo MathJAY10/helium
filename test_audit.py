@@ -13,7 +13,7 @@ async def main():
     settings = get_settings()
     service = AuditService(settings)
     try:
-        res = await service.run_audit("https://shop.mokobara.com", "test_req")
+        res = await service.run_audit("https://gymshark.com", "test_req")
         print("Success!")
     except Exception as e:
         import traceback
