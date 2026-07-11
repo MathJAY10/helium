@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str
     GEMINI_MODEL: str = "gemini-2.5-flash"
     LOG_LEVEL: str = "INFO"
-    REQUEST_TIMEOUT: int = 25
+    REQUEST_TIMEOUT: int = 20  # 20s page timeout + ~8s LLM = ~28s total, under Render's 30s limit
     MAX_CONCURRENT_PAGES: int = 2
     CACHE_TTL: int = 900  # 15 minutes
 

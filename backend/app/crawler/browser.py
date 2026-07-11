@@ -4,7 +4,7 @@ from playwright.async_api import async_playwright, BrowserContext
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/119.0.0.0 Safari/537.36"
+    "Chrome/125.0.0.0 Safari/537.36"
 )
 
 VIEWPORT = {"width": 1920, "height": 1080}
@@ -32,7 +32,16 @@ class BrowserManager:
         # Launch chromium. Set headless=True for production, but headless=new is preferred if supported.
         self._browser = await self._playwright.chromium.launch(
             headless=True,
-            args=["--disable-blink-features=AutomationControlled"]
+            args=[
+                "--disable-blink-features=AutomationControlled",
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-accelerated-2d-canvas",
+                "--no-first-run",
+                "--no-zygote",
+                "--disable-gpu",
+            ]
         )
 
     async def stop(self):
@@ -58,8 +67,9 @@ class BrowserManager:
         
         # Adding a small script to hide playwright footprint
         await context.add_init_script("""
-            Object.defineProperty(navigator, 'webdriver', {
-                get: () => undefined
-            });
+            Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+            Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
+            Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
+            window.chrome = { runtime: {} };
         """)
         return context
