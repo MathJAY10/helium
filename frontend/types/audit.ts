@@ -26,8 +26,8 @@ export interface RankedOpportunity {
 export interface RankedAudit {
   overall_score: number;
   executive_summary: string;
-  quick_wins: string[];
-  long_term_improvements: string[];
+  quick_wins: RankedOpportunity[];
+  long_term_improvements: RankedOpportunity[];
   ranked_opportunities: RankedOpportunity[];
 }
 

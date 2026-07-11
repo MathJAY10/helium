@@ -30,7 +30,7 @@ export function ExecutiveSummaryCard({ audit }: ExecutiveSummaryCardProps) {
               {audit.quick_wins.map((win, idx) => (
                 <li key={idx} className="flex items-start gap-2 text-sm">
                   <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
-                  <span className="leading-tight">{win}</span>
+                  <span className="leading-tight">{win.title}</span>
                 </li>
               ))}
               {audit.quick_wins.length === 0 && (
@@ -48,7 +48,7 @@ export function ExecutiveSummaryCard({ audit }: ExecutiveSummaryCardProps) {
               {audit.long_term_improvements.map((imp, idx) => (
                 <li key={idx} className="flex items-start gap-2 text-sm">
                   <div className="mt-1 h-1.5 w-1.5 rounded-full bg-blue-500 shrink-0" />
-                  <span className="leading-tight">{imp}</span>
+                  <span className="leading-tight">{imp.title}</span>
                 </li>
               ))}
               {audit.long_term_improvements.length === 0 && (

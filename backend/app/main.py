@@ -1,5 +1,10 @@
 import sys
+import os
 import asyncio
+
+# Force Playwright to look for browsers in the Render preserved folder
+if "RENDER" in os.environ:
+    os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "/opt/render/project/playwright"
 
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())

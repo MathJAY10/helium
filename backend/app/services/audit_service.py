@@ -43,8 +43,12 @@ class AuditService:
             pages = await asyncio.to_thread(_run_crawler_sync, url)
             timings["crawl_ms"] = round((time.time() - t0) * 1000)
 
-            if not pages or not pages.homepage:
-                raise CROEngineException("Crawler returned no pages", 503, "CRAWLER_FAILED")
+            if not pages or not pages.homepage or not pages.homepage.html:
+                raise CROEngineException(
+                    f"Crawler failed to retrieve the homepage for {url}. It may have timed out or hit bot protection.",
+                    503, 
+                    "CRAWLER_FAILED"
+                )
 
             # 2. Parse
             t0 = time.time()
