@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Request
 from app.schemas.requests import AuditRequest
-from app.ranking.models import RankedAudit
+from app.schemas.responses import AuditResponse
 from app.services.audit_service import AuditService
 from app.utils.config import Settings, get_settings
 
@@ -8,7 +8,7 @@ router = APIRouter(prefix="/api/audit", tags=["Audit"])
 
 @router.post(
     "",
-    response_model=RankedAudit,
+    response_model=AuditResponse,
     summary="Generate CRO Audit",
     description="Crawls a Shopify store, extracts features, performs LLM reasoning, and returns a prioritized CRO audit.",
     responses={
@@ -25,7 +25,7 @@ async def generate_audit(
     payload: AuditRequest, 
     request: Request,
     settings: Settings = Depends(get_settings)
-) -> RankedAudit:
+) -> AuditResponse:
     request_id = getattr(request.state, "request_id", "unknown")
     service = AuditService(settings)
     
