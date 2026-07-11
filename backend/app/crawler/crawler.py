@@ -157,8 +157,8 @@ class ShopifyCrawler:
             elif "/products/" in url:
                 products.add(url)
         
-        # Strict limits to stay within Render's 30-second free-tier timeout
-        return list(collections)[:0], list(products)[:2]
+        # Homepage-only mode: skip extra pages to fit Render's 30s timeout
+        return [], []
 
     async def _crawl_bounded(self, context: BrowserContext, url: str, page_type: PageType) -> PageResult:
         """Wraps fetch with a semaphore for concurrency control."""
@@ -180,32 +180,9 @@ class ShopifyCrawler:
                 logger.error("Homepage crawl failed. Aborting store crawl.")
                 return StoreResult(homepage=homepage_result)
 
-            # 2. Discover Links
-            collection_urls, product_urls = self.discover_links(base_url, homepage_result.html)
-            cart_url = self._normalize_url(base_url, "/cart")
-            
-            logger.info("Discovery complete", collections=len(collection_urls), products=len(product_urls))
-
-            # 3. Crawl concurrently (Products only - skip cart to stay within timeout)
-            tasks = []
-            for url in product_urls:
-                tasks.append(self._crawl_bounded(context, url, PageType.PRODUCT))
-            
-            results = await asyncio.gather(*tasks, return_exceptions=True)
+            logger.info("Homepage-only crawl mode active (Render free-tier optimization)")
             
             store_result = StoreResult(homepage=homepage_result)
-            
-            for res in results:
-                if isinstance(res, PageResult):
-                    if res.page_type == PageType.COLLECTION:
-                        store_result.collections.append(res)
-                    elif res.page_type == PageType.PRODUCT:
-                        store_result.products.append(res)
-                    elif res.page_type == PageType.CART:
-                        store_result.cart = res
-                else:
-                    logger.error("Crawl task raised an exception", error=str(res))
-                    
             logger.info("Store crawl complete", store=base_url)
             return store_result
 
